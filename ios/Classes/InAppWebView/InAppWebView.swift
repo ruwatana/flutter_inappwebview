@@ -2235,8 +2235,12 @@ public class InAppWebView: WKWebView, UIScrollViewDelegate, WKUIDelegate, WKNavi
     
     public func webView(_ webView: WKWebView,
                         createWebViewWith configuration: WKWebViewConfiguration,
-                  for navigationAction: WKNavigationAction,
-                  windowFeatures: WKWindowFeatures) -> WKWebView? {
+                        for navigationAction: WKNavigationAction,
+                        windowFeatures: WKWindowFeatures) -> WKWebView? {
+        guard let targetFrame = navigationAction.targetFrame, !targetFrame.isMainFrame else {
+            return nil
+        }
+
         InAppWebView.windowAutoincrementId += 1
         let windowId = InAppWebView.windowAutoincrementId
         
@@ -2249,7 +2253,7 @@ public class InAppWebView: WKWebView, UIScrollViewDelegate, WKUIDelegate, WKNavi
         )
 
         InAppWebView.windowWebViews[windowId] = webViewTransport
-        windowWebView.stopLoading()
+        // windowWebView.stopLoading()
         
         var arguments: [String: Any?] = navigationAction.toMap()
         arguments["windowId"] = windowId
